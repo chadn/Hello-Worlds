@@ -17,12 +17,20 @@
 			];
 		
 		$('#nick').click(function(){
+			doit(rndom(clips.length,curIndex));
+		});
+		$(window).bind('keydown', function (event) {
+			if (event.keyCode > 48 && event.keyCode < (49+clips.length)) {
+				doit(event.keyCode - 49);
+			}
+		});
+		function doit(num) {
 			if (busy) return;
-			curIndex = rndom(clips.length,curIndex);
+			curIndex = num;
 			talkingTime(clips[curIndex][1]);
 			hai(clips[curIndex][0]);
 			busy = true;
-		});
+		}
 		for (var ii=0; clips[ii]; ii++) {
 			$(clips[ii][0]).bind('ended', function (event) {
 				busy = false;
