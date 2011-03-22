@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+		var current = null,
+			busy = false,
+			curIndex = -1,
+			talkPause = 200,
+			clips = [ [$('#sheSaid').get(0), 1000],
+				[$('#sheSaid2').get(0), 1000],
+				[$('#opinion').get(0), 1400],
+				[$('#lookItUp').get(0), 600],
+				[$('#yourMom').get(0), 600]
+			];
+		
+		$('#nick').click(function(){
+			if (busy) return;
+			curIndex = rndom(clips.length,curIndex);
+			talkingTime(clips[curIndex][1]);
+			hai(clips[curIndex][0]);
+			busy = true;
+		});
+		for (var ii=0; clips[ii]; ii++) {
+			$(clips[ii][0]).bind('ended', function (event) {
+				busy = false;
+			}, false);
+		}
+		function talkingTime(msLeft) {
+			if (msLeft < 0) {
+				$('#nick').removeClass('talking');
+				return;
+			} 
+			$('#nick').toggleClass('talking');
+			setTimeout(function(){
+				talkingTime(msLeft-talkPause);
+			}, talkPause);
+		}
+
+		function rndom(max,old) {
+			var cur = Math.floor(Math.random() * max);
+			//console.log("rndom("+max+","+old+"): "+cur);
+			return cur != old ? cur : rndom(max,old);
+		}
+
+		function hai (audio) {
+			//console.log("hai: ",audio);
+		
+			bai();
+			current = audio;
+
+			try {
+				audio.currentTime = 0;
+			} catch (e) {
+				// Couldn't set for some reason...
+			}
+			audio.play();
+		}
+
+		function bai () {
+			current && current.pause();
+		}
+	});
+
+</script>
+<style>
+	html {
+	    background:#203240;
+	}
+	#nick{
+		background:url(nick-head.jpg);
+	    margin: 0 auto;
+		height:360px;
+		width:433px;
+	}
+	#dummy,
+	#nick.talking{
+		background:url(nick-head2.jpg);
+	}
+	#dummy {
+		background-position:-1000px;
+	}
+</style>
+	
+  </head>
+<body>
+	<div id='dummy'></div>
+	<div id='nick'></div>
+	<audio id="sheSaid">
+		<source src="/nick/Nick-she-said.mp3" type="audio/mpeg"> 
+		<source src="/nick/Nick-she-said.ogg" type="audio/ogg; codec=vorbis">
+	</audio>
+	<audio id="sheSaid2">
+		<source src="/nick/Nick-she-said2.mp3" type="audio/mpeg"> 
+		<source src="/nick/Nick-she-said2.ogg" type="audio/ogg; codec=vorbis">
+	</audio>
+	<audio id="opinion">
+		<source src="/nick/Nick-not-opinion-if-fact.mp3" type="audio/mpeg"> 
+		<source src="/nick/Nick-not-opinion-if-fact.ogg" type="audio/ogg; codec=vorbis">
+	</audio>
+	<audio id="lookItUp">
+		<source src="/nick/Nick-look-it-up.mp3" type="audio/mpeg"> 
+		<source src="/nick/Nick-look-it-up.ogg" type="audio/ogg; codec=vorbis">
+	</audio>
+	<audio id="yourMom">
+		<source src="/nick/Nick-your-mom.mp3" type="audio/mpeg"> 
+		<source src="/nick/Nick-your-mom.ogg" type="audio/ogg; codec=vorbis">
+	</audio>
+</body>
